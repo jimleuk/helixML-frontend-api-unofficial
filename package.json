@@ -1,0 +1,15 @@
+{
+  "name": "helix-frontend-api",
+  "version": "0.0.1",
+  "main": "dist/index.ts",
+  "types": "dist/index.ts",
+  "license": "MIT",
+  "author": "Jim Le <jim@height.io>",
+  "scripts": {
+    "lint": "openapi-generator validate -i api.yml",
+    "generate": "openapi-generator generate --generate-alias-as-model -i api.yml --global-property skipFormModel=false -g typescript-axios -o ./dist"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.9.0"
+  }
+}
