@@ -969,9 +969,24 @@ components:
     SessionType:
       type: string
       enum: [text, image]
-    SessionOrigin:
+    SessionOriginType:
       type: string
       enum: [user_created, cloned]
+    SessionOrigin:
+      type: object
+      required:
+        - type
+        - cloned_session_id
+        - cloned_interaction_id
+      properties:
+        type:
+          $ref: "#/components/schemas/SessionOriginType"
+        cloned_session_id:
+          type: string
+          format: uuid
+        cloned_interaction_id:
+          type: string
+          format: uuid
     Session:
       type: object
       required:
@@ -993,6 +1008,7 @@ components:
       properties:
         id:
           type: string
+          format: uuid
         name:
           type: string
         created:
@@ -1023,6 +1039,7 @@ components:
             $ref: "#/components/schemas/SessionInteraction"
         owner:
           type: string
+          format: uuid
         owner_type:
           $ref: "#/components/schemas/OwnerType"
     SessionConfig:
@@ -1058,9 +1075,11 @@ components:
         priority:
           type: boolean
         document_ids:
-          type: object
-          additionalProperties:
-            type: string
+          oneOf:
+            - 'null'
+            - type: object
+              additionalProperties:
+                type: string
         document_group_id:
           type: string
         manually_review_questions:
@@ -1084,9 +1103,11 @@ components:
         eval_automatic_reason:
           type: string
         eval_original_user_prompts:
-          type: array
-          items:
-            type: string
+          oneOf:
+            - type:'null'
+            - type: array
+              items:
+                type: string
     SessionSummary:
       type: object
       required:
@@ -1103,6 +1124,7 @@ components:
         - owner
         # - lora_dir
         - summary
+        - priority
       properties:
         created:
           type: string
@@ -1115,12 +1137,15 @@ components:
           format: date-time
         completed:
           type: string
+          format: date-time
         session_id:
           type: string
+          format: uuid
         name:
           type: string
         interaction_id:
           type: string
+          format: uuid
         model_name:
           type: string
         mode: 
@@ -1129,10 +1154,13 @@ components:
           $ref: "#/components/schemas/SessionType"
         owner:
           type: string
+          format: uuid
         lora_dir:
           type: string
         summary:
           type: string
+        priority:
+          type: boolean
     SessionInteractionState:
       type: string
       enum: [waiting, editing, complete, error]
@@ -1191,6 +1219,7 @@ components:
           format: date-time
         completed:
           type: string
+          format: date-time
         creator:
           $ref: "#/components/schemas/SessionCreator"
         mode:
@@ -1398,8 +1427,8 @@ components:
         - url
       properties:
         created:
-          type: string
-          format: date-time
+          description: in unix seconds
+          type: number
         size:
           type: number
         directory:
