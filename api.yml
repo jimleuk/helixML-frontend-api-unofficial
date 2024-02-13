@@ -269,6 +269,20 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/GetSessionResponse"
+  "/sessions/chat":
+    post:
+      summary: Blocking and streaming sessions API that holds the conversation context
+      description: Blocking and streaming sessions API that holds the conversation context
+      operationId: createOrUpdateSessionChat
+      tags:
+        - sessions
+      requestBody:
+        $ref: "#/components/requestBodies/SessionChatRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/SessionChatResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
   "/sessions/{id}":
     get:
       summary: Returns a session
@@ -960,7 +974,7 @@ components:
     OwnerType:
       type: string
       enum: [user, system, org]
-    SessionCreator:
+    SessionCreatorType:
       type: string
       enum: [system, user]
     SessionMode:
@@ -1221,7 +1235,7 @@ components:
           type: string
           format: date-time
         creator:
-          $ref: "#/components/schemas/SessionCreator"
+          $ref: "#/components/schemas/SessionCreatorType"
         mode:
           $ref: "#/components/schemas/SessionMode"
         runner:
@@ -1254,6 +1268,48 @@ components:
             $ref: "#/components/schemas/DataPrepChunk"
         data_prep_stage:
           $ref: "#/components/schemas/TextDataPrepStage"
+    SessionMessageContentType:
+      type: string
+      enum: [text]
+    SessionMessageContent:
+      type: object
+      required:
+        - content_type
+        - parts
+      properties:
+        content_type:
+          $ref: "#/components/schemas/SessionMessageContentType"
+        parts:
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - 'null'
+    SessionMessage:
+      type: object
+      required:
+        - id
+        - role
+        - content
+        - created_at
+        - updated_at
+        - state
+      properties:
+        id:
+          type: string
+          description: Interaction ID
+        role:
+          $ref: "#/components/schemas/SessionCreatorType"
+        content:
+          $ref: "#/components/schemas/SessionMessageContent"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        state:
+          $ref: "#/components/schemas/SessionInteractionState"
     Conversation:
       type: object
       required:
@@ -1650,6 +1706,74 @@ components:
           items:
             type: string
             format: binary
+    SessionChatRequest:
+      type: object
+      required:
+      properties:
+        session_id:
+          type: string
+          description: If empty, we will start a new session
+        stream:
+          type: boolean
+          description: If true, we will stream the response
+        mode:
+          $ref: "#/components/schemas/SessionMode"
+        type:
+          $ref: "#/components/schemas/SessionType"
+        lora_dir:
+          type: string
+        messages:
+          description: Initial messages
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionMessage"
+        tools:
+          description: Available tools to use in the session
+          type: array
+          items:
+            type: string
+        model:
+          description: The model to use
+          type: string
+    SessionChatResponse:
+      type: object
+      required:
+      - id
+      - object
+      - model
+      - choices
+      - created
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            required:
+            - index
+            - finish_reason
+            - delta
+            - message
+            - text
+            properties:
+              index:
+                type: integer
+              finish_reason:
+                type: string
+              delta:
+                $ref: "#/components/schemas/SessionMessage"
+              message:
+                $ref: "#/components/schemas/SessionMessage"
+              text:
+                type: string
+        created:
+          type: number
   responses:
     GetServerConfigResponse:
       description: Returns server configuration for frontend
@@ -1788,6 +1912,12 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/SessionSummary"
+    SessionChatResponse:
+      description: Blocking and streaming sessions API that holds the conversation context
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schema/SessionChatResponse"
     GetConversationsResponse:
       description: Returns a list of conversations
       content:
@@ -1977,3 +2107,10 @@ components:
         application/x-tar:
           schema:
             $ref: "#/components/schemas/SaveRunnerSessionFolderRequest"
+    SessionChatRequest:
+      description: Parameters for Session Chat request
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SessionChatRequest"
