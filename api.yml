@@ -1,8 +1,10 @@
 openapi: "3.0.0"
 info:
-  version: 0.5.5
-  title: Helix Frontend API
-  description: Helix Frontend API (Authenticated)
+  version: 0.0.1
+  title: HelixML Frontend API
+  description: |
+    HelixML Frontend API (Unofficial)
+    https://github.com/jimleuk/helixML-frontend-api-unofficial
   license:
     name: MIT
 servers:
