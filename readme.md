@@ -1,4 +1,4 @@
-# Helix Frontend API + OpenAPI Spec
+# HelixML Frontend API + OpenAPI Spec
 
 This repo contains an unofficial swagger document of HelixML Frontend API (https://docs.helix.ml/). It is written to the OpenAPI 3 spec and tested to render correctly in swagger.io editor and builds with the openAPI generator (typescript-axios).
 
