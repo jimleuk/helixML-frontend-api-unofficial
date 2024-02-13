@@ -1091,11 +1091,10 @@ components:
         priority:
           type: boolean
         document_ids:
-          oneOf:
-            - 'null'
-            - type: object
-              additionalProperties:
-                type: string
+          nullable: true
+          type: object
+          additionalProperties:
+            type: string
         document_group_id:
           type: string
         manually_review_questions:
@@ -1119,11 +1118,10 @@ components:
         eval_automatic_reason:
           type: string
         eval_original_user_prompts:
-          oneOf:
-            - type:'null'
-            - type: array
-              items:
-                type: string
+          nullable: true
+          type: array
+          items:
+            type: string
     SessionSummary:
       type: object
       required:
@@ -1282,11 +1280,10 @@ components:
         content_type:
           $ref: "#/components/schemas/SessionMessageContentType"
         parts:
+          nullable: true
           type: array
           items:
-            anyOf:
-              - type: string
-              - 'null'
+            type: string
     SessionMessage:
       type: object
       required:
@@ -1927,7 +1924,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schema/SessionChatResponse"
+            $ref: "#/components/schemas/SessionChatResponse"
     GetConversationsResponse:
       description: Returns a list of conversations
       content:
