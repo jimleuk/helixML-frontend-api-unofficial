@@ -247,6 +247,23 @@ paths:
       tags:
         - sessions
       parameters:
+        - name: owner
+          in: query
+          description: owner filter for query
+          schema:
+            type: string
+            format: uuid
+        - name: owner_type
+          in: query
+          description: owner_type filter for query
+          schema:
+            $ref: "#/components/schemas/OwnerType"
+        - name: parent_session
+          in: query
+          description: parent_session filter for query
+          schema:
+            type: string
+            format: uuid
         - name: offset
           in: query
           description: pagination offset
