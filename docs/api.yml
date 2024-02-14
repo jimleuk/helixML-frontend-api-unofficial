@@ -1,0 +1,2140 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: HelixML Frontend API
+  description: |
+    HelixML Frontend API (Unofficial)
+    https://github.com/jimleuk/helixML-frontend-api-unofficial
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8081/api/v1
+paths:
+  "/config":
+    get:
+      summary: Get server configuration for frontend.
+      description: Get server configuration for frontend.
+      operationId: getServerConfig
+      tags:
+        - misc
+      responses:
+        "200":
+          $ref: "#/components/responses/GetServerConfigResponse"
+  "/config/js":
+    get:
+      summary: Get Javascript configuration data.
+      description: Get Javascript configuration data.
+      operationId: getConfigJS
+      tags:
+        - misc
+      responses:
+        "200":
+          $ref: "#/components/responses/GetConfigJSResponse"
+  "/status":
+    get:
+      summary: Get a user's status
+      description: Get a user's status
+      operationId: getUserStatus
+      tags:
+        - users
+      responses:
+        "200":
+          $ref: "#/components/responses/GetUserStatusResponse"
+  "/filestore/config":
+    get:
+      summary: Get a user's filestore config
+      description: Get a user's filestore config
+      operationId: getUserFilestoreConfig
+      tags:
+        - filestore
+      responses:
+        "200":
+          $ref: "#/components/responses/GetFilestoreConfigResponse"
+  "/filestore/list":
+    get:
+      summary: List items in user's filestore under given a path
+      description: List items in user's filestore under given a path
+      operationId: getUserFilestoreList
+      tags:
+        - filestore
+      parameters:
+        - name: "path"
+          in: query
+          description: location of files to list
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetFilestoreListResponse"
+  "/filestore/get":
+    get:
+      summary: Get an item in user's filestore
+      description: Get an item in user's filestore
+      operationId: getUserFilestoreItem
+      tags:
+        - filestore
+      parameters:
+        - name: "path"
+          in: query
+          description: location of file to get
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetFilestoreItemResponse"
+  "/filestore/folder":
+    post:
+      summary: Create a folder in user's filestore
+      description: Create a folder in user's filestore
+      operationId: createUserFilestoreFolder
+      tags:
+        - filestore
+      parameters:
+        - name: "path"
+          in: query
+          description: location of folder to get
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetFilestoreItemResponse"
+  "/filestore/upload":
+    post:
+      summary: Upload items to user's filestore
+      description: Upload items to user's filestore
+      operationId: SaveUserFilestoreItem
+      tags:
+        - filestore
+      parameters:
+        - name: "path"
+          in: query
+          description: location of folder to upload to
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/SaveUserFilestoreItemRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/SaveUserFilestoreItemResponse"
+  "/filestore/rename":
+    put:
+      summary: Rename an item in user's filestore
+      description: Rename an item in user's filestore
+      operationId: renameUserFilestoreItem
+      tags:
+        - filestore
+      parameters:
+        - name: "path"
+          in: query
+          description: target file to rename
+          required: true
+          schema:
+            type: string
+        - name: "new_path"
+          in: query
+          description: new destination file of rename
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetFilestoreItemResponse"
+  "/filestore/delete":
+    delete:
+      summary: Delete an item in user's filestore
+      description: Delete an item in user's filestore
+      operationId: deleteUserFilestoreItem
+      tags:
+        - filestore
+      parameters:
+        - name: "path"
+          in: query
+          description: target file to rename
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/DeleteUserFilestoreItemResponse"
+  "/subscription/new":
+    post:
+      summary: Creates a new subscription for a user. Returns checkoutURL.
+      description: Creates a new subscription for a user. Returns checkoutURL.
+      operationId: CreateUserSubscription
+      tags:
+        - subscriptions
+      responses:
+        "200":
+          $ref: "#/components/responses/CreateUserSubscriptionResponse"
+  "/subscription/manage":
+    post:
+      summary: Returns a portalSessionURL for user to manage their subscription
+      description: Returns a portalSessionURL for user to manage their subscription
+      operationId: GetUserSubscription
+      tags:
+        - subscriptions
+      responses:
+        "200":
+          $ref: "#/components/responses/GetUserSubscriptionResponse"
+  "/api_keys":
+    get:
+      summary: Get user's API keys.
+      description: Get user's API keys.
+      operationId: GetUserApiKeyList
+      tags:
+        - auth
+      responses:
+        "200":
+          $ref: "#/components/responses/GetUserApiKeyListResponse"
+    post:
+      summary: Create a new API key for user.
+      description: Create a new API key for user.
+      operationId: CreateUserApiKey
+      tags:
+        - auth
+      parameters:
+        - name: "name"
+          in: query
+          description: Name of the Api key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/CreateUserApiKeyResponse"
+    delete:
+      summary: Delete a new API key for user.
+      description: Delete a new API key for user.
+      operationId: DeleteUserApiKey
+      tags:
+        - auth
+      parameters:
+        - name: "key"
+          in: query
+          description: value of the Api key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/DeleteUserApiKeyResponse"
+  "/api_keys/check":
+    get:
+      summary: Validate a user's API key.
+      description: Validate a user's API key.
+      operationId: CheckUserApiKey
+      tags:
+        - auth
+      parameters:
+        - name: "key"
+          in: query
+          description: value of the Api key
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/CheckUserApiKeyResponse"
+  "/sessions":
+    get:
+      summary: Queries for sessions. Returns a list of session summaries.
+      description: Queries for sessions. Returns a list of session summaries.
+      operationId: getSessions
+      tags:
+        - sessions
+      parameters:
+        - name: owner
+          in: query
+          description: owner filter for query
+          schema:
+            type: string
+            format: uuid
+        - name: owner_type
+          in: query
+          description: owner_type filter for query
+          schema:
+            $ref: "#/components/schemas/OwnerType"
+        - name: parent_session
+          in: query
+          description: parent_session filter for query
+          schema:
+            type: string
+            format: uuid
+        - name: offset
+          in: query
+          description: pagination offset
+          schema:
+            type: number
+        - name: limit
+          in: query
+          description: pagination limit
+          schema:
+            type: number
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionListResponse"
+    post:
+      summary: Creates a new session.
+      description: Creates a new session
+      operationId: createSession
+      tags:
+        - sessions
+      requestBody:
+        $ref: "#/components/requestBodies/CreateSessionRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionResponse"
+  "/sessions/chat":
+    post:
+      summary: Blocking and streaming sessions API that holds the conversation context
+      description: Blocking and streaming sessions API that holds the conversation context
+      operationId: createOrUpdateSessionChat
+      tags:
+        - sessions
+      requestBody:
+        $ref: "#/components/requestBodies/SessionChatRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/SessionChatResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+  "/sessions/{id}":
+    get:
+      summary: Returns a session
+      description: Returns a session
+      operationId: getSession
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of session to retrieve
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionResponse"
+    delete:
+      summary: Deletes a session
+      operationId: deleteSession
+      tags:
+       - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionResponse"
+    put:
+      summary: Updates an existing session
+      operationId: updateSession
+      tags:
+       - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateSessionRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionResponse"
+  "/sessions/{id}/config":
+    put:
+      summary: Updates a session's config
+      description: Update an existing session's config
+      operationId: updateSessionConfig
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session to update
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionConfigResponse"
+  "/sessions/{id}/summary":
+    get:
+      summary: Returns a summary of an existing session
+      description: Returns a summary of an existing session
+      operationId: getSessionSummary
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session to retrieve
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionSummaryResponse"
+  "/sessions/{id}/meta":
+    put:
+      summary: Get an existing session's metadata
+      description: Updates an existing session's metadata
+      operationId: updateSessionMeta
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateSessionMetaRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionResponse"
+  "/sessions/{id}/restart":
+    put:
+      summary: Restarts an existing session
+      description: Restarts an existing session
+      operationId: restartSession
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session to update
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionResponse"
+  "/sessions/{id}/clone/{interactionId}":
+    put:
+      summary: Clone an interaction of an existing session
+      description: Clone an interaction of an existing session
+      operationId: cloneSessionInteraction
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session
+          required: true
+          schema:
+            type: string
+        - name: interactionId
+          in: path
+          description: ID of existing interaction of the session to clone
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionResponse"
+  "/sessions/{id}/finetune/documents":
+    put:
+      summary: Upload session files for finetuning
+      description: Upload session files for finetuning
+      operationId: uploadSessionFiles
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/SaveSessionFilesRequest"
+      responses:
+        "204":
+          description: The resource was uploaded successfully.
+  "/sessions/${id}/finetune/start":
+    post:
+      summary: Start finetuning a session
+      description: Start finetuning a session
+      operationId: startSessionFinetune
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: The resource was started successfully.
+  "/sessions/{id}/finetune/text/conversations/{interactionId}":
+    get:
+      summary: retrieve conversation for a finetuned session
+      description: retrieve conversation for a finetuned session
+      operationId: getSessionFinetuneTextConversation
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session
+          required: true
+          schema:
+            type: string
+        - name: interactionId
+          in: path
+          description: ID of existing interaction of the session to get
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetConversationsResponse"
+    put:
+      summary: Save a conversation of a finetuned sessions
+      description: Save a conversation of a finetuned sessions
+      operationId: saveSessionFinetuneTextConversation
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session to update
+          required: true
+          schema:
+            type: string
+        - name: interactionId
+          in: path
+          description: ID of existing interaction of the session to get
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/SaveConversationRequest"
+      responses:
+        "204":
+          description: The resource was created successfully.
+  "/sessions/{id}/finetune/text/retry":
+    get:
+      summary: Retries a text finetuning session
+      description: Retries a text finetuning session
+      operationId: retrySessionFinetuneText
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session to update
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionResponse"
+  "/sessions/{id}/finetune/clone/{interactionId}":
+    post:
+      summary: Clone an existing session's finetuning. Returns a new session.
+      description: Clone an existing session's finetuning. Returns a new session.
+      operationId: cloneSessionFinetune
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session to clone
+          required: true
+          schema:
+            type: string
+        - name: interactionId
+          in: path
+          description: ID of existing interaction
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionResponse"
+  "/sessions/{id}/finetune/clone/{interactionId}/{interactionMode}":
+    post:
+      summary: Clone an existing session's finetuning with "interactionMode". Returns a new session.
+      description: Clone an existing session's finetuning with "interactionMode". Returns a new session.
+      operationId: cloneSessionFinetuneWithMode
+      tags:
+        - sessions
+      parameters:
+        - name: id
+          in: path
+          description: ID of existing session to clone
+          required: true
+          schema:
+            type: string
+        - name: interactionId
+          in: path
+          description: ID of existing interaction
+          required: true
+          schema:
+            type: string
+        - name: interactionMode
+          in: path
+          description: Mode of cloning operation for interaction
+          required: true
+          schema:
+            $ref: "#/components/schemas/SessionInteractionMode"
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionResponse"
+  "/tools":
+    get:
+      summary: List available tools
+      description: List available tools
+      operationId: getTools
+      tags:
+        - tools
+      responses:
+        "200":
+          $ref: "#/components/responses/GetToolListResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+    post:
+      summary: Create a tool
+      description: Create a tool
+      operationId: createTool
+      tags:
+        - tools
+      requestBody:
+        $ref: "#/components/requestBodies/CreateToolRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/GetToolResponse"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+  "/tools/{id}":
+    put:
+      summary: Updates a tool
+      description: Updates a tool
+      operationId: updateTool
+      tags:
+        - tools
+      parameters:
+        - name: id
+          in: path
+          description: ID of the tool
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateToolRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/GetToolResponse"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+    delete:
+      summary: Deletes a tool
+      description: Deletes a tool
+      operationId: deleteTool
+      tags:
+        - tools
+      parameters:
+        - name: id
+          in: path
+          description: ID of the tool
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          $ref: "#/components/responses/GetToolResponse"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+  "/runner/{id}/nextsession":
+    get:
+      summary: Get runner's next session
+      description: Get runner's next session
+      operationId: getRunnerNextSession
+      tags:
+        - runners
+      parameters:
+        - name: id
+          in: path
+          description: ID of the runner
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: mode
+          in: query
+          description: session mode filter.
+          schema:
+            $ref: '#/components/schemas/SessionMode'
+        - name: type
+          in: query
+          description: session type filter.
+          schema:
+            $ref: '#/components/schemas/SessionType'
+        - name: model_name
+          in: query
+          description: model name filter.
+          schema:
+            type: string
+        - name: lora_dir
+          in: query
+          description: directory of LORA filter.
+          schema:
+            type: string
+        - name: memory
+          in: query
+          description: size of memory filter.
+          schema:
+            type: number
+        - name: reject
+          in: query
+          description: >
+            Reject Filter. There are multiple entries for this param all of the format model_name:mode
+          schema:
+            type: array
+            items:
+              type: string
+        - name: older
+          in: query
+          description: duration filter. In seconds.
+          schema:
+            type: number
+      responses:
+        "200":
+          $ref: "#/components/responses/GetSessionResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+  "/runner/{id}/response":
+    post:
+      summary: Handles a runner's response
+      description: Handles a runner's response
+      operationId: handleRunnerResponse
+      tags:
+        - runners
+      parameters:
+        - name: id
+          in: path
+          description: ID of the runner
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        $ref: "#/components/requestBodies/HandleRunnerResponseRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/GetRunnerTaskResponseResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+  "/runner/{id}/state":
+    post:
+      summary: handle a runner's state (metrics)
+      description: handle a runner's state (metrics)
+      operationId: handleRunnerState
+      tags:
+        - runners
+      parameters:
+        - name: id
+          in: path
+          description: ID of the runner
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        $ref: "#/components/requestBodies/HandleRunnerStateRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/GetRunnerStateResponse"
+  "/runner/{id}/session/{sessionId}/download/file":
+    get:
+      summary: Get runner's uploaded files for session
+      description: Get runner's uploaded files for session
+      operationId: getRunnerSessionFiles
+      tags:
+        - runners
+      parameters:
+        - name: id
+          in: path
+          description: ID of the runner
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sessionId
+          in: path
+          description: ID of the session
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: path
+          in: query
+          description: filepath of file
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetRunnerSessionFilesResponse"
+    post:
+      summary: Upload files for a runner's session
+      description: Upload files for a runner's session
+      operationId: SaveRunnerSessionFiles
+      tags:
+        - runners
+      parameters:
+        - name: id
+          in: path
+          description: ID of the runner
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sessionId
+          in: path
+          description: ID of the session
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: path
+          in: query
+          description: filepath of file
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/SaveRunnerSessionFilesRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/SaveRunnerSessionFilesResponse"
+  "/runner/{id}/session/{sessionId}/download/folder":
+    get:
+      summary: Get runner's uploaded folder for session as an archive
+      description: Get runner's uploaded folder for session as an archive
+      operationId: getRunnerSessionFolder
+      tags:
+        - runners
+      parameters:
+        - name: id
+          in: path
+          description: ID of the runner
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sessionId
+          in: path
+          description: ID of the session
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: path
+          in: query
+          description: filepath of file
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/GetRunnerSessionFolderResponse"
+    post:
+      summary: Upload folder (as archive) for a runner's session
+      description: Upload folder (archive) for a runner's session
+      operationId: SaveRunnerSessionFolder
+      tags:
+        - runners
+      parameters:
+        - name: id
+          in: path
+          description: ID of the runner
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sessionId
+          in: path
+          description: ID of the session
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: path
+          in: query
+          description: filepath of file
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/SaveRunnerSessionFolderRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/SaveRunnerSessionFolderResponse"
+  "/bots/{id}":
+    get:
+      summary: Get a bot
+      description: Get a bot
+      operationId: getBot
+      tags:
+        - bots
+      parameters:
+        - name: id
+          in: path
+          description: ID of the bot
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          $ref: "#/components/responses/GetBotResponse"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    ServerConfig:
+      type: object
+      required:
+        - filestore_prefix
+        - stripe_enabled
+        - sentry_dsn_frontend
+        - google_analytics_frontend
+        - eval_user_id
+      properties:
+        filestore_prefix:
+          type: string
+        stripe_enabled:
+          type: boolean
+        sentry_dsn_frontend:
+          type: string
+        google_analytics_frontend:
+          type: string
+        eval_user_id:
+          type: string
+    ApiKey:
+      type: object
+      required:
+        - owner
+        - owner_type
+        - key
+        - name
+      properties:
+        owner:
+          type: string
+        owner_type:
+          $ref: "#/components/schemas/OwnerType"
+        key:
+          type: string
+        name:
+          type: string
+    Counter:
+      type: object
+      required:
+        - count
+      properties:
+        count:
+          type: number
+    UserConfig:
+      type: object
+      required:
+        - stripe_subscription_active
+        - stripe_customer_id
+        - stripe_subscription_id
+      properties:
+        stripe_subscription_active:
+          type: boolean
+        stripe_customer_id:
+          type: string
+        stripe_subscription_id:
+          type: string
+    UserStatus:
+      type: object
+      required:
+        - admin
+        - user
+        - config
+      properties:
+        admin:
+          type: boolean
+        user:
+          type: string
+        config:
+          $ref: "#/components/schemas/UserConfig"
+    OwnerType:
+      type: string
+      enum: [user, system, org]
+    SessionCreatorType:
+      type: string
+      enum: [system, user]
+    SessionMode:
+      type: string
+      enum: [inference, finetune]
+    SessionType:
+      type: string
+      enum: [text, image]
+    SessionOriginType:
+      type: string
+      enum: [user_created, cloned]
+    SessionOrigin:
+      type: object
+      required:
+        - type
+        - cloned_session_id
+        - cloned_interaction_id
+      properties:
+        type:
+          $ref: "#/components/schemas/SessionOriginType"
+        cloned_session_id:
+          type: string
+          format: uuid
+        cloned_interaction_id:
+          type: string
+          format: uuid
+    Session:
+      type: object
+      required:
+        - id
+        - name
+        - created
+        - updated
+        - parent_session
+        - parent_bot
+        - child_bot
+        - config
+        - mode
+        - type
+        - model_name
+        - lora_dir
+        - interactions
+        - owner
+        - owner_type
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        parent_session:
+          type: string
+        parent_bot:
+          type: string
+        child_bot:
+          type: string
+        config:
+          $ref: "#/components/schemas/SessionConfig"
+        mode:
+          $ref: "#/components/schemas/SessionMode"
+        type:
+          $ref: "#/components/schemas/SessionType"
+        model_name:
+          type: string
+        lora_dir:
+          type: string
+        interactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionInteraction"
+        owner:
+          type: string
+          format: uuid
+        owner_type:
+          $ref: "#/components/schemas/OwnerType"
+    SessionConfig:
+      type: object
+      required:
+        - original_mode
+        - origin
+        # - shared
+        - avatar
+        - priority
+        - document_ids
+        - document_group_id
+        - manually_review_questions
+        - system_prompt
+        - helix_version
+        - eval_run_id
+        - eval_user_score
+        - eval_user_reason
+        - eval_manual_score
+        - eval_manual_reason
+        - eval_automatic_score
+        - eval_automatic_reason
+        - eval_original_user_prompts
+      properties:
+        original_mode:
+          $ref: "#/components/schemas/SessionMode"
+        origin:
+          $ref: "#/components/schemas/SessionOrigin"
+        shared:
+          type: boolean
+        avatar:
+          type: string
+        priority:
+          type: boolean
+        document_ids:
+          nullable: true
+          type: object
+          additionalProperties:
+            type: string
+        document_group_id:
+          type: string
+        manually_review_questions:
+          type: boolean
+        system_prompt:
+          type: string
+        helix_version:
+          type: string
+        eval_run_id:
+          type: string
+        eval_user_score:
+          type: string
+        eval_user_reason:
+          type: string
+        eval_manual_score:
+          type: string
+        eval_manual_reason:
+          type: string
+        eval_automatic_score:
+          type: string
+        eval_automatic_reason:
+          type: string
+        eval_original_user_prompts:
+          nullable: true
+          type: array
+          items:
+            type: string
+    SessionSummary:
+      type: object
+      required:
+        - created
+        - updated
+        - scheduled
+        - completed
+        - session_id
+        - name
+        - interaction_id
+        - model_name
+        - mode
+        - type
+        - owner
+        # - lora_dir
+        - summary
+        - priority
+      properties:
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        scheduled:
+          type: string
+          format: date-time
+        completed:
+          type: string
+          format: date-time
+        session_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        interaction_id:
+          type: string
+          format: uuid
+        model_name:
+          type: string
+        mode: 
+          $ref: "#/components/schemas/SessionMode"
+        type:
+          $ref: "#/components/schemas/SessionType"
+        owner:
+          type: string
+          format: uuid
+        lora_dir:
+          type: string
+        summary:
+          type: string
+        priority:
+          type: boolean
+    SessionInteractionState:
+      type: string
+      enum: [waiting, editing, complete, error]
+    SessionInteractionMode:
+      type: string
+      enum: [just_data, with_questions, all]
+    DataPrepChunk:
+      type: object
+      required:
+        - index
+        - question_count
+        - error
+      properties:
+        index:
+          type: number
+        question_count:
+          type: number
+        error:
+          type: string
+    TextDataPrepStage:
+      type: string
+      enum: ['', edit_files, extract_text, generate_questions, edit_questions, finetune, complete]
+    SessionInteraction:
+      type: object
+      required:
+        - id
+        - created
+        - updated
+        - scheduled
+        - completed
+        - creator
+        - mode
+        - runner
+        - message
+        - progress
+        - files
+        - finished
+        - metadata
+        - state
+        - status
+        - error
+        - lora_dir
+        - data_prep_chunks
+        - data_prep_stage
+      properties:
+        id:
+          type: string
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        scheduled:
+          type: string
+          format: date-time
+        completed:
+          type: string
+          format: date-time
+        creator:
+          $ref: "#/components/schemas/SessionCreatorType"
+        mode:
+          $ref: "#/components/schemas/SessionMode"
+        runner:
+          type: string
+        message:
+          type: string
+        progress:
+          type: number
+        files:
+          type: array
+          items:
+            type: string
+        finished:
+          type: boolean
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        state:
+          $ref: "#/components/schemas/SessionInteractionState"
+        status:
+          type: string
+        error:
+          type: string
+        lora_dir:
+          type: string
+        data_prep_chunks:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/DataPrepChunk"
+        data_prep_stage:
+          $ref: "#/components/schemas/TextDataPrepStage"
+    SessionMessageContentType:
+      type: string
+      enum: [text]
+    SessionMessageContent:
+      type: object
+      required:
+        - content_type
+        - parts
+      properties:
+        content_type:
+          $ref: "#/components/schemas/SessionMessageContentType"
+        parts:
+          nullable: true
+          type: array
+          items:
+            type: string
+    SessionMessage:
+      type: object
+      required:
+        - id
+        - role
+        - content
+        - created_at
+        - updated_at
+        - state
+      properties:
+        id:
+          type: string
+          description: Interaction ID
+        role:
+          $ref: "#/components/schemas/SessionCreatorType"
+        content:
+          $ref: "#/components/schemas/SessionMessageContent"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        state:
+          $ref: "#/components/schemas/SessionInteractionState"
+    Conversation:
+      type: object
+      required:
+        - from
+        - value
+      properties:
+        from:
+          type: string
+        value:
+          type: string
+    ToolType:
+      type: string
+      enum: [api, function]
+    Tool:
+      type: object
+      required:
+        - id
+        - created
+        - updated
+        - owner
+        - ownerType
+        - name
+        - description
+        - toolType
+        - config
+      properties:
+        id:
+          type: string
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        owner:
+          type: string
+          format: uuid
+        ownerType:
+          $ref: "#/components/schemas/OwnerType"
+        name:
+          type: string
+        description:
+          type: string
+        toolType:
+          $ref: "#/components/schemas/ToolType"
+        config:
+          type: object
+          additionalProperties:
+            type: string
+    ModelName:
+      type: string
+      enum:
+        - mistralai/Mistral-7B-Instruct-v0.1
+        - stabilityai/stable-diffusion-xl-base-1.0
+    ModelInstanceState:
+      type: object
+      required:
+        - id
+        - model_name
+        - mode
+        - lora_dir
+        - initial_session_id
+        - current_session
+        - job_history
+        - timeout
+        - last_activity
+        - stale
+        - memory
+      properties:
+        id:
+          type: string
+        model_name:
+          $ref: "#/components/schemas/ModelName"
+        mode:
+          $ref: "#/components/schemas/SessionMode"
+        lora_dir:
+          type: string
+        initial_session_id:
+          type: string
+        current_session:
+          $ref: "#/components/schemas/SessionSummary"
+        job_history:
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionSummary"
+        timeout:
+          type: number
+        last_activity:
+          type: number
+        stale:
+          type: boolean
+        memory:
+          type: number
+    RunnerState:
+      type: object
+      required:
+        - id
+        - created
+        - total_memory
+        - free_memory
+        - labels
+        - model_instances
+        - scheduling_decisions
+      properties:
+        id:
+          type: string
+          format: uuid
+        created:
+          type: string
+          format: uuid
+        total_memory:
+          type: number
+        free_memory:
+          type: number
+        labels:
+          type: object
+          additionalProperties:
+            type: string
+        model_instances:
+          type: array
+          items:
+            $ref: "#/components/schemas/ModelInstanceState"
+        scheduling_decisions:
+          type: array
+          items:
+            type: string
+    WorkerTaskResponseType:
+      type: string
+      enum: [string, progress, result]
+    RunnerTaskResponse:
+      type: object
+      required:
+        - type
+        - session_id
+        - interaction_id
+        - owner
+      properties:
+        type:
+          $ref: "#/components/schemas/WorkerTaskResponseType"     
+        session_id:
+          type: string
+        interaction_id:
+          type: string
+          format: uuid
+        owner:
+          type: string
+        message:
+          type: string
+        progress:
+          type: number
+        status:
+          type: string
+        files:
+          type: array
+          items:
+            type: string
+        lora_dir:
+          type: string
+        error:
+          type: string
+        done:
+          type: boolean
+    FileStoreItem:
+      type: object
+      required:
+        - created
+        - size
+        - directory
+        - name
+        - path
+        - url
+      properties:
+        created:
+          description: in unix seconds
+          type: number
+        size:
+          type: number
+        directory:
+          type: boolean
+        name:
+          type: string
+        path:
+          type: string
+        url:
+          type: string
+    FilestoreFolder:
+      type: object
+      required:
+        - name
+        - readonly
+      properties:
+        name:
+          type: string
+        readonly:
+          type: boolean
+    FilestoreConfig:
+      type: object
+      required:
+        - user_prefix
+        - folders
+      properties:
+        user_prefix:
+          type: string
+        folders:
+          type: array
+          items:
+            $ref: "#/components/schemas/FilestoreFolder"
+    BotSession:
+      type: object
+      required:
+        - session_id
+        - name
+        - pre_prompt
+      properties:
+        session_id:
+          type: string
+        name:
+          type: string
+        pre_prompt:
+          type: string
+    BotConfig:
+      type: object
+      required:
+        - description
+        - avatar
+        - sessions
+      properties:
+        description:
+          type: string
+        avatar:
+          type: string
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/BotSession"
+    Bot:
+      type: object
+      required:
+        - id
+        - name
+        - created
+        - updated
+        - owner
+        - owner_type
+        - config
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        owner:
+          type: string
+        owner_type:
+          $ref: "#/components/schemas/OwnerType"
+        config:
+          $ref: "#/components/schemas/BotConfig"
+    # --------------------------------------------------------------------------      
+    CreateSessionRequest:
+      type: object
+      required:
+        - input
+        - type
+        - mode
+      properties:
+        input:
+          type: string
+        type:
+          $ref: "#/components/schemas/SessionType"
+        mode:
+          $ref: "#/components/schemas/SessionMode"
+    UpdateSessionRequest:
+      type: object
+      required:
+        - input
+      properties:
+        input:
+          type: string
+    UpdateSessionMetaRequest:
+      type: object
+      required:
+        - id
+        - name
+        # - owner
+        # - owner_type
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        owner:
+          type: string
+        owner_type:
+          type: string
+    SaveSessionFilesRequest:
+      type: object
+      required:
+        - files
+        - mode
+        - type
+      properties:
+        files:
+          type: array
+          items:
+            type: string
+            format: binary
+        mode: 
+          $ref: "#/components/schemas/SessionMode"
+        type:
+          $ref: "#/components/schemas/SessionType"
+    GetConversationsResponse:
+      type: object
+      required:
+        - conversations
+      properties:
+        conversations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Conversation"
+    SaveConversationRequest:
+      type: object
+      required:
+        - conversations
+      properties:
+        conversations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Conversation"
+    CreateToolRequest:
+      type: object
+      required:
+        - name
+        - description
+        - toolType
+        - config
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        toolType:
+          $ref: "#/components/schemas/ToolType"
+        config:
+          type: object
+          additionalProperties:
+            type: string
+    UpdateToolRequest:
+      type: object
+      required:
+        - name
+        - description
+        - toolType
+        - config
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        toolType:
+          $ref: "#/components/schemas/ToolType"
+        config:
+          type: object
+          additionalProperties:
+            type: string
+    HandleRunnerResponseRequest:
+      $ref: "#/components/schemas/RunnerTaskResponse"
+    HandleRunnerStateRequest:
+      $ref: "#/components/schemas/RunnerState"
+    SaveRunnerSessionFilesRequest:
+      type: object
+      required:
+        - files
+      properties:
+        files:
+          type: array
+          items:
+            type: string
+            format: binary
+    SaveRunnerSessionFolderRequest:
+      type: string
+      format: binary
+    SaveUserFilestoreItemRequest:
+      type: object
+      required:
+        - files
+      properties:
+        files:
+          type: array
+          items:
+            type: string
+            format: binary
+    SessionChatRequest:
+      type: object
+      required:
+        - session_id
+        - stream
+        - mode
+        - type
+        - lora_dir
+        - messages
+        - tools
+        - model
+      properties:
+        session_id:
+          type: string
+          description: If empty, we will start a new session
+        stream:
+          type: boolean
+          description: If true, we will stream the response
+        mode:
+          $ref: "#/components/schemas/SessionMode"
+        type:
+          $ref: "#/components/schemas/SessionType"
+        lora_dir:
+          type: string
+        messages:
+          description: Initial messages
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionMessage"
+        tools:
+          description: Available tools to use in the session
+          type: array
+          items:
+            type: string
+        model:
+          description: The model to use
+          type: string
+    SessionChatResponse:
+      type: object
+      required:
+      - id
+      - object
+      - model
+      - choices
+      - created
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          type: string
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            required:
+            - index
+            - finish_reason
+            - delta
+            - message
+            - text
+            properties:
+              index:
+                type: integer
+              finish_reason:
+                type: string
+              delta:
+                $ref: "#/components/schemas/SessionMessage"
+              message:
+                $ref: "#/components/schemas/SessionMessage"
+              text:
+                type: string
+        created:
+          type: number
+  responses:
+    GetServerConfigResponse:
+      description: Returns server configuration for frontend
+      content:
+        application/javascript:
+          schema:
+            $ref: "#/components/schemas/ServerConfig"
+    GetConfigJSResponse:
+      description: Returns javascript configuration data
+      content:
+        application/javascript:
+          schema:
+            type: string
+            format: binary
+    ErrorResponse:
+      description: Returns an error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+              message:
+                type: string
+    GetUserApiKeyListResponse:
+      description: A list of API keys
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/ApiKey"
+    GetUserApiKeyResponse:
+      description: A list of API keys
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiKey"
+    CreateUserApiKeyResponse:
+      description: Returns created API key
+      content:
+        application/json:
+          schema:
+            type: string
+    DeleteUserApiKeyResponse:
+      description: Returns empty string on success or error.
+      content:
+        application/json:
+          schema:
+            type: string
+    CheckUserApiKeyResponse:
+      description: Returns nil if invalid or the key otherwise.
+      content:
+        application/json:
+          schema:
+            type: string
+    GetUserStatusResponse:
+      description: Returns a user's status
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserStatus"
+    GetFilestoreConfigResponse:
+      description: Returns a user's filestore config
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FilestoreConfig"
+    GetFilestoreListResponse:
+      description: Returns a list of items in user's filestore
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/FileStoreItem"
+    GetFilestoreItemResponse:
+      description: Returns an items in user's filestore
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FileStoreItem"
+    SaveUserFilestoreItemResponse:
+      description: Returns true if files saved successfully.
+      content:
+        application/json:
+          schema:
+            type: boolean
+    DeleteUserFilestoreItemResponse:
+      description: Returns path of file which was deleted.
+      content:
+        application/json:
+          schema:
+            type: string
+    CreateUserSubscriptionResponse:
+      description: Returns checkoutURL for the user
+      content:
+        application/json:
+          schema:
+            type: string
+    GetUserSubscriptionResponse:
+      description: Returns portalSessionURL for the user
+      content:
+        application/json:
+          schema:
+            type: string
+    GetSessionListResponse:
+      description: Returns a list of sessions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sessions:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SessionSummary"
+              counter:
+                $ref: "#/components/schemas/Counter"
+    GetSessionResponse:
+      description: Returns an existing session
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Session"
+    GetSessionConfigResponse:
+      description: Returns an existing session's config
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SessionConfig"
+    GetSessionSummaryResponse:
+      description: Returns an existing session's summary
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SessionSummary"
+    SessionChatResponse:
+      description: Blocking and streaming sessions API that holds the conversation context
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SessionChatResponse"
+    GetConversationsResponse:
+      description: Returns a list of conversations
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GetConversationsResponse"
+    GetToolListResponse:
+      description: Returns a list of tools
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/Tool"
+    GetToolResponse:
+      description: Returns a tool
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Tool"
+    GetRunnerTaskResponseResponse:
+      description: Returns runner's "task response" response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/RunnerTaskResponse"
+    GetRunnerStateResponse:
+      description: Returns runner's session files
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/RunnerState"
+    GetRunnerSessionFilesResponse:
+      description: Returns runner's session files
+      headers:
+        Content-Disposition:
+          schema:
+            type: string
+        Content-Type:
+          schema:
+            type: string
+      content:
+        text/plain:
+          schema:
+            type:
+              string
+            format:
+              binary
+        text/csv:
+          schema:
+            type:
+              string
+            format:
+              binary
+        application/pdf:
+          schema:
+            type:
+              string
+            format:
+              binary
+        image/jpg:
+          schema:
+            type:
+              string
+            format:
+              binary
+        image/png:
+          schema:
+            type:
+              string
+            format:
+              binary
+        image/tiff:
+          schema:
+            type:
+              string
+            format:
+              binary
+    SaveRunnerSessionFilesResponse:
+      description: Returns runner's session files
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/FileStoreItem"
+    GetRunnerSessionFolderResponse:
+      description: Returns runner's session folder as an archive
+      content:
+        application/x-tar:
+          schema:
+            type: string
+            format: binary
+    SaveRunnerSessionFolderResponse:
+      description: Returns runner's session folder
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FileStoreItem"
+    GetBotResponse:
+      description: Returns a bot
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Bot"
+  requestBodies:
+    SaveUserFilestoreItemRequest:
+      description: Parameters to Upload items to user's filestore
+      content:
+        multipart/form-data:
+          schema:
+            $ref: "#/components/schemas/SaveUserFilestoreItemRequest"
+    CreateSessionRequest:
+      description: Parameters for creating a new session
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: "#/components/schemas/CreateSessionRequest"
+    UpdateSessionRequest:
+      description: Updates a Session
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: "#/components/schemas/UpdateSessionRequest"
+    UpdateSessionMetaRequest:
+      description: Parameters for updating a Session meta
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UpdateSessionMetaRequest"
+    SaveSessionFilesRequest:
+      description: Parameters for uploading files to a session
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: "#/components/schemas/SaveSessionFilesRequest"
+    SaveConversationRequest:
+      description: Parameters for saving conversations for a finetuned session
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SaveConversationRequest"
+    CreateToolRequest:
+      description: Parameters for creating a tool
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CreateToolRequest"
+    UpdateToolRequest:
+      description: Parameters for updating a tool
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UpdateToolRequest"
+    HandleRunnerResponseRequest:
+      description: Parameters for handling a runner's task response
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/HandleRunnerResponseRequest"
+    HandleRunnerStateRequest:
+      description: Parameters for handling a runner's state
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/HandleRunnerStateRequest"
+    SaveRunnerSessionFilesRequest:
+      description: Parameters for uploading files to a runner's session
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: "#/components/schemas/SaveRunnerSessionFilesRequest"
+    SaveRunnerSessionFolderRequest:
+      description: Parameters for uploading folder (as archive) to a runner's session
+      required: true
+      content:
+        application/x-tar:
+          schema:
+            $ref: "#/components/schemas/SaveRunnerSessionFolderRequest"
+    SessionChatRequest:
+      description: Parameters for Session Chat request
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SessionChatRequest"

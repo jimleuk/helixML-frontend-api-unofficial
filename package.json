@@ -7,7 +7,8 @@
   "author": "Jim Le <jim@height.io>",
   "scripts": {
     "lint": "openapi-generator validate -i api.yml",
-    "generate": "openapi-generator generate --generate-alias-as-model -i api.yml --global-property skipFormModel=false -g typescript-axios -o ./dist"
+    "generate": "openapi-generator generate --generate-alias-as-model -i api.yml --global-property skipFormModel=false -g typescript-axios -o ./dist",
+    "docs": "cp api.yml ./docs/api.yml"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.9.0"
