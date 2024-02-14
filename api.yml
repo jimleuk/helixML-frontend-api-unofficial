@@ -1339,6 +1339,52 @@ components:
     ToolType:
       type: string
       enum: [api, function]
+    ToolAction:
+      type: object
+      required:
+      - name
+      - description
+      - method
+      - path
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        method:
+          type: string
+          enum: [GET,POST,PUT,DELETE]
+        path:
+          type: string
+    ToolConfig:
+      type: object
+      required:
+      - api
+      - headers
+      - query
+      properties:
+        api:
+          type: object
+          required:
+          - url
+          - schema
+          - actions
+          properties:
+            url:
+              type: string
+            schema:
+              type: string
+            actions:
+              type: array
+              items:
+                $ref: "#/components/schemas/ToolAction"
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+        query:
+          additionalProperties:
+            type: string
     Tool:
       type: object
       required:
@@ -1372,9 +1418,7 @@ components:
         toolType:
           $ref: "#/components/schemas/ToolType"
         config:
-          type: object
-          additionalProperties:
-            type: string
+          $ref: "#/components/schemas/ToolConfig"
     ModelName:
       type: string
       enum:
@@ -1674,9 +1718,7 @@ components:
         toolType:
           $ref: "#/components/schemas/ToolType"
         config:
-          type: object
-          additionalProperties:
-            type: string
+          $ref: "#/components/schemas/ToolConfig"
     UpdateToolRequest:
       type: object
       required:
@@ -1692,9 +1734,7 @@ components:
         toolType:
           $ref: "#/components/schemas/ToolType"
         config:
-          type: object
-          additionalProperties:
-            type: string
+          $ref: "#/components/schemas/ToolConfig"
     HandleRunnerResponseRequest:
       $ref: "#/components/schemas/RunnerTaskResponse"
     HandleRunnerStateRequest:
