@@ -916,6 +916,16 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/GetBotResponse"
+  "/swagger":
+    get:
+      summary: Displays the intended API usage openAPI Spec
+      description: Displays the intended API usage openAPI Spec. May not include endpoints intended for frontend app.
+      operationId: getApiSchema
+      tags:
+       - misc
+      responses:
+        "200":
+          $ref: "#/components/responses/GetAPISchemaResponse"
 components:
   securitySchemes:
     BearerAuth:
@@ -2087,6 +2097,12 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Bot"
+    GetAPISchemaResponse:
+      description: Returns API JSON schema
+      content:
+        text/plain:
+          schema:
+            type: string
   requestBodies:
     SaveUserFilestoreItemRequest:
       description: Parameters to Upload items to user's filestore
